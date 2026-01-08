@@ -360,7 +360,7 @@
             htmlOutput.value = `<img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}">`;
 
             // Markdown
-            markdownOutput.value = `![${escapeHtml(alt)}](${escapeHtml(url)})`;
+            markdownOutput.value = `![${escapeHtml(alt)}](${url})`;
 
             // Direct URL
             urlOutput.value = url;
@@ -411,7 +411,7 @@
         function copyWithExecCommand(textarea, successId) {
             try {
                 textarea.select();
-                textarea.setSelectionRange(0, 99999); // For mobile devices
+                textarea.setSelectionRange(0, textarea.value.length); // For mobile devices
                 document.execCommand('copy');
                 showSuccessMessage(successId);
             } catch (err) {
