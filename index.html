@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Bilder Verlinken - Bild URL Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .preview-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            min-height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .preview-section img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-section .placeholder {
+            color: #999;
+            font-style: italic;
+        }
+
+        .output-section {
+            margin-top: 30px;
+        }
+
+        .output-group {
+            margin-bottom: 20px;
+        }
+
+        .output-box {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        textarea {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            min-height: 80px;
+            background: #f8f9fa;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.1s;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .copy-btn {
+            padding: 12px 16px;
+            font-size: 13px;
+        }
+
+        .success-message {
+            display: none;
+            color: #28a745;
+            font-size: 12px;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .info-box {
+            background: #e8f4ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+        }
+
+        .info-box p {
+            color: #555;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .output-box {
+                flex-direction: column;
+            }
+
+            .copy-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖼️ HTML Bilder Verlinken</h1>
+        <p class="subtitle">Erstellen Sie einfach URL-Links für Ihre Bilder</p>
+
+        <div class="info-box">
+            <p>
+                📌 Geben Sie die URL eines Bildes ein, um eine Vorschau zu sehen und verschiedene Link-Formate zu generieren.
+                Sie können die generierten Codes kopieren und in Ihre HTML- oder Markdown-Dokumente einfügen.
+            </p>
+        </div>
+
+        <div class="input-group">
+            <label for="imageUrl">Bild-URL eingeben:</label>
+            <input 
+                type="text" 
+                id="imageUrl" 
+                placeholder="z.B. https://example.com/bild.jpg"
+                autocomplete="off"
+            >
+            <div id="errorMessage" class="error-message hidden"></div>
+        </div>
+
+        <div class="input-group">
+            <label for="altText">Alternativtext (optional):</label>
+            <input 
+                type="text" 
+                id="altText" 
+                placeholder="z.B. Beschreibung des Bildes"
+                autocomplete="off"
+            >
+        </div>
+
+        <div class="preview-section" id="preview">
+            <div class="placeholder">Vorschau wird hier angezeigt...</div>
+        </div>
+
+        <div class="output-section" id="outputSection" class="hidden">
+            <h2 style="color: #333; margin-bottom: 20px; font-size: 20px;">Generierte Links:</h2>
+
+            <div class="output-group">
+                <label>HTML Image Tag:</label>
+                <div class="output-box">
+                    <textarea id="htmlOutput" readonly></textarea>
+                    <button class="copy-btn" onclick="copyToClipboard('htmlOutput', 'htmlSuccess')">
+                        📋 Kopieren
+                    </button>
+                </div>
+                <div id="htmlSuccess" class="success-message">✓ Kopiert!</div>
+            </div>
+
+            <div class="output-group">
+                <label>Markdown Image Syntax:</label>
+                <div class="output-box">
+                    <textarea id="markdownOutput" readonly></textarea>
+                    <button class="copy-btn" onclick="copyToClipboard('markdownOutput', 'markdownSuccess')">
+                        📋 Kopieren
+                    </button>
+                </div>
+                <div id="markdownSuccess" class="success-message">✓ Kopiert!</div>
+            </div>
+
+            <div class="output-group">
+                <label>Direkte URL:</label>
+                <div class="output-box">
+                    <textarea id="urlOutput" readonly></textarea>
+                    <button class="copy-btn" onclick="copyToClipboard('urlOutput', 'urlSuccess')">
+                        📋 Kopieren
+                    </button>
+                </div>
+                <div id="urlSuccess" class="success-message">✓ Kopiert!</div>
+            </div>
+
+            <div class="output-group">
+                <label>HTML Link zum Bild (anklickbar):</label>
+                <div class="output-box">
+                    <textarea id="linkOutput" readonly></textarea>
+                    <button class="copy-btn" onclick="copyToClipboard('linkOutput', 'linkSuccess')">
+                        📋 Kopieren
+                    </button>
+                </div>
+                <div id="linkSuccess" class="success-message">✓ Kopiert!</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const imageUrlInput = document.getElementById('imageUrl');
+        const altTextInput = document.getElementById('altText');
+        const preview = document.getElementById('preview');
+        const outputSection = document.getElementById('outputSection');
+        const errorMessage = document.getElementById('errorMessage');
+
+        const htmlOutput = document.getElementById('htmlOutput');
+        const markdownOutput = document.getElementById('markdownOutput');
+        const urlOutput = document.getElementById('urlOutput');
+        const linkOutput = document.getElementById('linkOutput');
+
+        // Debounce function to avoid too many updates
+        let debounceTimer;
+        function debounce(callback, delay) {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(callback, delay);
+        }
+
+        // Update preview and outputs when URL changes
+        imageUrlInput.addEventListener('input', function() {
+            debounce(updatePreview, 500);
+        });
+
+        altTextInput.addEventListener('input', function() {
+            updateOutputs();
+        });
+
+        function updatePreview() {
+            const url = imageUrlInput.value.trim();
+            errorMessage.classList.add('hidden');
+
+            if (!url) {
+                preview.innerHTML = '<div class="placeholder">Vorschau wird hier angezeigt...</div>';
+                outputSection.classList.add('hidden');
+                return;
+            }
+
+            // Basic URL validation
+            if (!isValidUrl(url)) {
+                errorMessage.textContent = '⚠️ Bitte geben Sie eine gültige URL ein';
+                errorMessage.classList.remove('hidden');
+                preview.innerHTML = '<div class="placeholder">Ungültige URL</div>';
+                outputSection.classList.add('hidden');
+                return;
+            }
+
+            // Create image element for preview
+            const img = document.createElement('img');
+            img.src = url;
+            
+            img.onload = function() {
+                preview.innerHTML = '';
+                preview.appendChild(img);
+                outputSection.classList.remove('hidden');
+                updateOutputs();
+            };
+
+            img.onerror = function() {
+                errorMessage.textContent = '⚠️ Bild konnte nicht geladen werden. Überprüfen Sie die URL.';
+                errorMessage.classList.remove('hidden');
+                preview.innerHTML = '<div class="placeholder">Bild konnte nicht geladen werden</div>';
+                outputSection.classList.add('hidden');
+            };
+        }
+
+        function updateOutputs() {
+            const url = imageUrlInput.value.trim();
+            const alt = altTextInput.value.trim() || 'Bild';
+
+            // HTML Image Tag
+            htmlOutput.value = `<img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}">`;
+
+            // Markdown
+            markdownOutput.value = `![${escapeHtml(alt)}](${url})`;
+
+            // Direct URL
+            urlOutput.value = url;
+
+            // HTML Link (clickable)
+            linkOutput.value = `<a href="${escapeHtml(url)}" target="_blank">\n  <img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}">\n</a>`;
+        }
+
+        function isValidUrl(string) {
+            try {
+                const url = new URL(string);
+                return url.protocol === 'http:' || url.protocol === 'https:';
+            } catch (_) {
+                return false;
+            }
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        function copyToClipboard(textareaId, successId) {
+            const textarea = document.getElementById(textareaId);
+            textarea.select();
+            textarea.setSelectionRange(0, 99999); // For mobile devices
+
+            try {
+                document.execCommand('copy');
+                showSuccessMessage(successId);
+            } catch (err) {
+                // Fallback for modern browsers
+                navigator.clipboard.writeText(textarea.value).then(() => {
+                    showSuccessMessage(successId);
+                }).catch(err => {
+                    console.error('Fehler beim Kopieren:', err);
+                });
+            }
+        }
+
+        function showSuccessMessage(successId) {
+            const successMsg = document.getElementById(successId);
+            successMsg.classList.add('show');
+            setTimeout(() => {
+                successMsg.classList.remove('show');
+            }, 2000);
+        }
+
+        // Initialize with empty state
+        updatePreview();
+    </script>
+</body>
+</html>
