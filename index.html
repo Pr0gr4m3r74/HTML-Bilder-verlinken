@@ -237,7 +237,7 @@
             <div class="placeholder">Vorschau wird hier angezeigt...</div>
         </div>
 
-        <div class="output-section" id="outputSection" class="hidden">
+        <div class="output-section hidden" id="outputSection">
             <h2 style="color: #333; margin-bottom: 20px; font-size: 20px;">Generierte Links:</h2>
 
             <div class="output-group">
@@ -360,7 +360,7 @@
             htmlOutput.value = `<img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}">`;
 
             // Markdown
-            markdownOutput.value = `![${escapeHtml(alt)}](${url})`;
+            markdownOutput.value = `![${escapeHtml(alt)}](${escapeHtml(url)})`;
 
             // Direct URL
             urlOutput.value = url;
@@ -391,19 +391,32 @@
 
         function copyToClipboard(textareaId, successId) {
             const textarea = document.getElementById(textareaId);
-            textarea.select();
-            textarea.setSelectionRange(0, 99999); // For mobile devices
+            const textToCopy = textarea.value;
+            
+            // Try modern Clipboard API first
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showSuccessMessage(successId);
+                }).catch(err => {
+                    // Fallback to older method
+                    console.warn('Clipboard API failed, trying execCommand:', err);
+                    copyWithExecCommand(textarea, successId);
+                });
+            } else {
+                // Fallback for older browsers
+                copyWithExecCommand(textarea, successId);
+            }
+        }
 
+        function copyWithExecCommand(textarea, successId) {
             try {
+                textarea.select();
+                textarea.setSelectionRange(0, 99999); // For mobile devices
                 document.execCommand('copy');
                 showSuccessMessage(successId);
             } catch (err) {
-                // Fallback for modern browsers
-                navigator.clipboard.writeText(textarea.value).then(() => {
-                    showSuccessMessage(successId);
-                }).catch(err => {
-                    console.error('Fehler beim Kopieren:', err);
-                });
+                console.error('Fehler beim Kopieren:', err);
+                alert('Kopieren fehlgeschlagen. Bitte manuell kopieren.');
             }
         }
 
