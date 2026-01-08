@@ -298,6 +298,10 @@
         const urlOutput = document.getElementById('urlOutput');
         const linkOutput = document.getElementById('linkOutput');
 
+        // Configuration constants
+        const DEBOUNCE_DELAY_MS = 500;
+        const SUCCESS_MESSAGE_DURATION_MS = 2000;
+
         // Debounce function to avoid too many updates
         let debounceTimer;
         function debounce(callback, delay) {
@@ -307,7 +311,7 @@
 
         // Update preview and outputs when URL changes
         imageUrlInput.addEventListener('input', function() {
-            debounce(updatePreview, 500);
+            debounce(updatePreview, DEBOUNCE_DELAY_MS);
         });
 
         altTextInput.addEventListener('input', function() {
@@ -425,7 +429,7 @@
             successMsg.classList.add('show');
             setTimeout(() => {
                 successMsg.classList.remove('show');
-            }, 2000);
+            }, SUCCESS_MESSAGE_DURATION_MS);
         }
 
         // Initialize with empty state
